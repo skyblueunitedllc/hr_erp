@@ -9,8 +9,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config("SECRET_KEY", default="django-insecure-change-me")
 DEBUG = config("DEBUG", default=False, cast=bool)
 
-raw_allowed_hosts = config("ALLOWED_HOSTS", default="localhost,127.0.0.1")
-ALLOWED_HOSTS = [host.strip() for host in raw_allowed_hosts.split(",") if host.strip()]
+ALLOWED_HOSTS = config(
+    "ALLOWED_HOSTS",
+    default="localhost,127.0.0.1,hr-erp-1.onrender.com"
+).split(",")
 
 INSTALLED_APPS = [
     'django.contrib.admin',
