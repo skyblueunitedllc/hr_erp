@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 760px; margin: 0 auto; padding: 24px;">
+    <div style="background: white; border-radius: 12px; padding: 28px; box-shadow: 0 4px 14px rgba(0,0,0,0.08);">
+        <h2 style="margin-top: 0; color: #1f2937;">{{ title }}</h2>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div style="margin-bottom: 16px;">
+                <label style="display:block; font-weight:600; margin-bottom:6px;">Employee</label>
+                {{ form.employee }}
+                {{ form.employee.errors }}
+            </div>
+
+            <div style="margin-bottom: 16px;">
+                <label style="display:block; font-weight:600; margin-bottom:6px;">Title</label>
+                {{ form.title }}
+                {{ form.title.errors }}
+            </div>
+
+            <div style="margin-bottom: 16px;">
+                <label style="display:block; font-weight:600; margin-bottom:6px;">File</label>
+                {{ form.file }}
+                {{ form.file.errors }}
+            </div>
+
+            <div style="margin-bottom: 16px;">
+                <label style="display:block; font-weight:600; margin-bottom:6px;">Expiry Date</label>
+                {{ form.expiry_date }}
+                {{ form.expiry_date.errors }}
+            </div>
+
+            <div style="margin-bottom: 16px;">
+                <label style="display:block; font-weight:600; margin-bottom:6px;">Company Document</label>
+                {{ form.is_company_document }}
+                {{ form.is_company_document.errors }}
+            </div>
+
+            <div style="margin-top: 24px;">
+                <button type="submit"
+                        style="background:#2563eb; color:white; padding:10px 18px; border:none; border-radius:8px; font-weight:600;">
+                    Save
+                </button>
+                <a href="{% url 'document_list' %}"
+                   style="margin-left:12px; color:#374151; text-decoration:none; font-weight:600;">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const inputs = document.querySelectorAll("select, input, textarea");
+        inputs.forEach(function (el) {
+            el.style.width = "100%";
+            el.style.padding = "10px";
+            el.style.border = "1px solid #d1d5db";
+            el.style.borderRadius = "8px";
+            el.style.boxSizing = "border-box";
+            el.style.fontSize = "14px";
+        });
+    });
+</script>
+{% endblock %}

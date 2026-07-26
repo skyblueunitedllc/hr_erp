@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto; padding: 24px;">
+    <div style="background:white; border-radius:12px; padding:24px; box-shadow:0 4px 14px rgba(0,0,0,0.08);">
+        <h2 style="margin-top:0; margin-bottom:6px;">{{ title }}</h2>
+        {% if company_name %}
+            <p style="margin-top:0; color:#6b7280;">Company: <strong>{{ company_name }}</strong></p>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                <div>
+                    <label style="display:block; margin-bottom:6px; font-weight:600;">Employee</label>
+                    {{ form.employee }}
+                    {{ form.employee.errors }}
+                </div>
+                <div>
+                    <label style="display:block; margin-bottom:6px; font-weight:600;">Date</label>
+                    {{ form.work_date }}
+                    {{ form.work_date.errors }}
+                </div>
+                <div>
+                    <label style="display:block; margin-bottom:6px; font-weight:600;">Hours</label>
+                    {{ form.hours }}
+                    {{ form.hours.errors }}
+                </div>
+                <div>
+                    <label style="display:block; margin-bottom:6px; font-weight:600;">Day Type</label>
+                    {{ form.day_type }}
+                    {{ form.day_type.errors }}
+                </div>
+                <div>
+                    <label style="display:block; margin-bottom:6px; font-weight:600;">Rate per Hour</label>
+                    {{ form.rate_per_hour }}
+                    {{ form.rate_per_hour.errors }}
+                </div>
+                <div>
+                    <label style="display:block; margin-bottom:6px; font-weight:600;">Remark</label>
+                    {{ form.remark }}
+                    {{ form.remark.errors }}
+                </div>
+            </div>
+
+            <div style="margin-top:24px; display:flex; gap:12px; flex-wrap:wrap;">
+                <button type="submit" style="background:#2563eb; color:white; border:none; padding:10px 16px; border-radius:8px; font-weight:600;">Save</button>
+                <a href="{% url 'overtime_list' %}" style="background:#e5e7eb; color:#111827; padding:10px 16px; border-radius:8px; text-decoration:none; font-weight:600;">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

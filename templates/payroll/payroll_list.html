@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 1500px; margin: 0 auto; padding: 24px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+        <div style="text-align:center; width:100%;">
+            <h2 style="margin:0; text-align:center;">Payroll</h2>
+            {% if company_name %}
+                <p style="margin:6px 0 0; color:#6b7280; text-align:center;">Company: <strong>{{ company_name }}</strong></p>
+            {% endif %}
+        </div>
+        <div style="width:100%; display:flex; justify-content:center; margin-top:12px;">
+            <a href="{% url 'payroll_create' %}" style="background:#2563eb; color:white; padding:10px 16px; border-radius:8px; text-decoration:none; font-weight:600;">Add Payroll</a>
+        </div>
+    </div>
+
+    <div style="background:white; border-radius:12px; padding:20px; box-shadow:0 4px 14px rgba(0,0,0,0.08); margin-bottom:20px;">
+        <form method="get" style="display:grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; gap:12px; align-items:end;">
+            <div>
+                <label style="display:block; margin-bottom:6px; font-weight:600;">Employee Name</label>
+                <input type="text" name="employee_name" value="{{ employee_name }}" class="form-control" style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:8px;">
+            </div>
+            <div>
+                <label style="display:block; margin-bottom:6px; font-weight:600;">Employee Code</label>
+                <input type="text" name="employee_code" value="{{ employee_code }}" class="form-control" style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:8px;">
+            </div>
+            <div>
+                <label style="display:block; margin-bottom:6px; font-weight:600;">From Date</label>
+                <input type="date" name="from_date" value="{{ from_date }}" class="form-control" style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:8px;">
+            </div>
+            <div>
+                <label style="display:block; margin-bottom:6px; font-weight:600;">To Date</label>
+                <input type="date" name="to_date" value="{{ to_date }}" class="form-control" style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:8px;">
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <button type="submit" style="background:#2563eb; color:white; border:none; padding:10px 16px; border-radius:8px; font-weight:600;">Search</button>
+                <a href="{% url 'payroll_list' %}" style="background:#e5e7eb; color:#111827; padding:10px 16px; border-radius:8px; text-decoration:none; font-weight:600;">Reset</a>
+            </div>
+        </form>
+    </div>
+
+    <div style="background:white; border-radius:12px; padding:24px; box-shadow:0 4px 14px rgba(0,0,0,0.08); overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse;">
+            <thead style="background:#f9fafb;">
+                <tr>
+                    <th style="text-align:center; padding:12px; border-bottom:1px solid #e5e7eb;">Employee</th>
+                    <th style="text-align:center; padding:12px; border-bottom:1px solid #e5e7eb;">Date</th>
+                    <th style="text-align:right; padding:12px; border-bottom:1px solid #e5e7eb;">Basic Salary</th>
+                    <th style="text-align:right; padding:12px; border-bottom:1px solid #e5e7eb;">Allowance</th>
+                    <th style="text-align:right; padding:12px; border-bottom:1px solid #e5e7eb;">Incentives</th>
+                    <th style="text-align:right; padding:12px; border-bottom:1px solid #e5e7eb;">Bonus</th>
+                    <th style="text-align:right; padding:12px; border-bottom:1px solid #e5e7eb;">Gross Salary</th>
+                    <th style="text-align:right; padding:12px; border-bottom:1px solid #e5e7eb;">Deductions</th>
+                    <th style="text-align:right; padding:12px; border-bottom:1px solid #e5e7eb;">Net Salary</th>
+                    <th style="text-align:center; padding:12px; border-bottom:1px solid #e5e7eb;">Paid</th>
+                    <th style="text-align:center; padding:12px; border-bottom:1px solid #e5e7eb;">Paid Date</th>
+                    <th style="text-align:center; padding:12px; border-bottom:1px solid #e5e7eb;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payroll in payrolls %}
+                <tr style="border-bottom:1px solid #f1f5f9;">
+                    <td style="padding:12px; text-align:center;">{{ payroll.employee.first_name }} {{ payroll.employee.last_name }}</td>
+                    <td style="padding:12px; text-align:center;">{{ payroll.date }}</td>
+                    <td style="padding:12px; text-align:right;">{{ payroll.basic_salary|floatformat:3 }}</td>
+                    <td style="padding:12px; text-align:right;">{{ payroll.allowance|floatformat:3 }}</td>
+                    <td style="padding:12px; text-align:right;">{{ payroll.incentives|floatformat:3 }}</td>
+                    <td style="padding:12px; text-align:right;">{{ payroll.bonus|floatformat:3 }}</td>
+                    <td style="padding:12px; text-align:right; font-weight:700;">{{ payroll.gross_salary|floatformat:3 }}</td>
+                    <td style="padding:12px; text-align:right;">{{ payroll.deductions|floatformat:3 }}</td>
+                    <td style="padding:12px; text-align:right; font-weight:700;">{{ payroll.net_salary|floatformat:3 }}</td>
+                    <td style="padding:12px; text-align:center;">
+                        {% if payroll.paid %}
+                            <span style="color:green; font-weight:600;">Yes</span>
+                        {% else %}
+                            <span style="color:red; font-weight:600;">No</span>
+                        {% endif %}
+                    </td>
+                    <td style="padding:12px; text-align:center;">{{ payroll.paid_date|default:"-" }}</td>
+                    <td style="padding:12px; text-align:center;">
+                        <a href="{% url 'payroll_update' payroll.pk %}" style="color:#2563eb; text-decoration:none; margin-right:10px;">Edit</a>
+                        <a href="{% url 'payroll_delete' payroll.pk %}" style="color:#dc2626; text-decoration:none; margin-right:10px;">Delete</a>
+                        <a href="{% url 'payroll_print' payroll.pk %}" style="color:#16a34a; text-decoration:none;">Print</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="12" style="padding:20px; text-align:center; color:#6b7280;">
+                        No payroll records found.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

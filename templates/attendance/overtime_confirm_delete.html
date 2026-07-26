@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 700px; margin: 0 auto; padding: 24px;">
+    <div style="background:white; border-radius:12px; padding:24px; box-shadow:0 4px 14px rgba(0,0,0,0.08);">
+        <h2 style="margin-top:0; margin-bottom:16px; color:#dc2626;">Delete Overtime</h2>
+
+        <p style="font-size:16px; margin-bottom:24px;">
+            Are you sure you want to delete overtime for
+            <strong>{{ overtime.employee.first_name }} {{ overtime.employee.last_name }}</strong>
+            on <strong>{{ overtime.work_date }}</strong>?
+        </p>
+
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" style="background:#dc2626; color:white; border:none; padding:10px 16px; border-radius:8px; font-weight:600;">Yes, Delete</button>
+            <a href="{% url 'overtime_list' %}" style="background:#e5e7eb; color:#111827; padding:10px 16px; border-radius:8px; text-decoration:none; font-weight:600; margin-left:10px;">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

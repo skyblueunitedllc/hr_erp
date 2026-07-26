@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+        <div>
+            <h2 style="margin:0;">Attendance</h2>
+            {% if company_name %}
+                <p style="margin:6px 0 0; color:#6b7280;">Company: <strong>{{ company_name }}</strong></p>
+            {% endif %}
+        </div>
+        <a href="{% url 'attendance_create' %}" style="background:#2563eb; color:white; padding:10px 16px; text-decoration:none; border-radius:8px; font-weight:600;">
+            + Add Attendance
+        </a>
+    </div>
+
+    <div style="background:white; border-radius:12px; box-shadow:0 4px 14px rgba(0,0,0,0.08); overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse;">
+            <thead style="background:#f9fafb;">
+                <tr>
+                    <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Date</th>
+                    <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Employee</th>
+                    <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Status</th>
+                    <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Remark</th>
+                    <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for attendance in attendance_records %}
+                <tr style="border-bottom:1px solid #f1f5f9;">
+                    <td style="padding:12px;">{{ attendance.date }}</td>
+                    <td style="padding:12px;">{{ attendance.employee.first_name }} {{ attendance.employee.last_name }}</td>
+                    <td style="padding:12px;">{{ attendance.get_status_display }}</td>
+                    <td style="padding:12px;">{{ attendance.remark|default:"-" }}</td>
+                    <td style="padding:12px;">
+                        <a href="{% url 'attendance_update' attendance.pk %}" style="color:#2563eb; text-decoration:none; margin-right:10px;">Edit</a>
+                        <a href="{% url 'attendance_delete' attendance.pk %}" style="color:#dc2626; text-decoration:none;">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="padding:20px; text-align:center; color:#6b7280;">No attendance records found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

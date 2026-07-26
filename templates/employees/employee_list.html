@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 1300px; margin: 0 auto; padding: 24px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+        <div>
+            <h2 style="margin:0;">Employees</h2>
+            {% if company_name %}
+                <p style="margin:6px 0 0; color:#6b7280;">Company: <strong>{{ company_name }}</strong></p>
+            {% endif %}
+        </div>
+        <a href="{% url 'employee_create' %}" style="background:#2563eb; color:white; padding:10px 16px; border-radius:8px; text-decoration:none; font-weight:600;">Add Employee</a>
+    </div>
+
+    <form method="get" style="margin-bottom:16px; display:flex; gap:10px; flex-wrap:wrap;">
+        <input type="text" name="q" value="{{ query }}" placeholder="Search by name..." style="padding:10px 12px; border:1px solid #d1d5db; border-radius:8px; min-width:260px;">
+        <button type="submit" style="background:#111827; color:white; border:none; padding:10px 16px; border-radius:8px;">Search</button>
+    </form>
+
+    <div style="background:white; border-radius:12px; padding:24px; box-shadow:0 4px 14px rgba(0,0,0,0.08); overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse;">
+            <thead style="background:#f9fafb;">
+                <tr>
+                    <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Code</th>
+                    <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">First Name</th>
+                    <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Last Name</th>
+                    <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Position</th>
+                    <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Department</th>
+                    <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Basic Salary</th>
+                    <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Allowance</th>
+                    <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Net Salary</th>
+                    <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Status</th>
+                    <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for employee in employees %}
+                <tr style="border-bottom:1px solid #f1f5f9;">
+                    <td style="padding:12px;">{{ employee.employee_code }}</td>
+                    <td style="padding:12px;">{{ employee.first_name }}</td>
+                    <td style="padding:12px;">{{ employee.last_name }}</td>
+                    <td style="padding:12px;">{{ employee.position }}</td>
+                    <td style="padding:12px;">{{ employee.department }}</td>
+                    <td style="padding:12px;">{{ employee.basic_salary }}</td>
+                    <td style="padding:12px;">{{ employee.allowance }}</td>
+                    <td style="padding:12px; font-weight:700;">{{ employee.net_salary }}</td>
+                    <td style="padding:12px;">
+                        {% if employee.is_active %}
+                            <span style="color:green; font-weight:600;">Active</span>
+                        {% else %}
+                            <span style="color:red; font-weight:600;">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td style="padding:12px;">
+                        <a href="{% url 'employee_update' employee.pk %}" style="color:#2563eb; text-decoration:none; margin-right:10px;">Edit</a>
+                        <a href="{% url 'employee_delete' employee.pk %}" style="color:#dc2626; text-decoration:none;">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="10" style="padding:20px; text-align:center; color:#6b7280;">
+                        No employees found.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

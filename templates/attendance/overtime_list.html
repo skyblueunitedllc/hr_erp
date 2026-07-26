@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 1400px; margin: 0 auto; padding: 24px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+        <div>
+            <h2 style="margin:0;">Overtime Sheet</h2>
+            {% if company_name %}
+                <p style="margin:6px 0 0; color:#6b7280;">Company: <strong>{{ company_name }}</strong></p>
+            {% endif %}
+        </div>
+        <a href="{% url 'overtime_create' %}" style="background:#2563eb; color:white; padding:10px 16px; border-radius:8px; text-decoration:none; font-weight:600;">Add Overtime</a>
+    </div>
+
+    <form method="get" style="margin-bottom:16px; display:flex; gap:10px; flex-wrap:wrap;">
+        <input type="text" name="q" value="{{ query }}" placeholder="Search by employee name..." style="padding:10px 12px; border:1px solid #d1d5db; border-radius:8px; min-width:260px;">
+        <button type="submit" style="background:#111827; color:white; border:none; padding:10px 16px; border-radius:8px;">Search</button>
+    </form>
+
+    <div style="background:white; border-radius:12px; padding:24px; box-shadow:0 4px 14px rgba(0,0,0,0.08); overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse;">
+            <thead style="background:#f9fafb;">
+                <tr>
+                    <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Employee</th>
+                    <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Date</th>
+                    <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Hours</th>
+                    <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Day Type</th>
+                    <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Rate/Hour</th>
+                    <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Amount</th>
+                    <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Paid</th>
+                    <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Paid Date</th>
+                    <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for overtime in overtimes %}
+                <tr style="border-bottom:1px solid #f1f5f9;">
+                    <td style="padding:12px;">{{ overtime.employee.first_name }} {{ overtime.employee.last_name }}</td>
+                    <td style="padding:12px;">{{ overtime.work_date }}</td>
+                    <td style="padding:12px;">{{ overtime.hours }}</td>
+                    <td style="padding:12px;">{{ overtime.get_day_type_display }}</td>
+                    <td style="padding:12px;">{{ overtime.rate_per_hour }}</td>
+                    <td style="padding:12px; font-weight:700;">{{ overtime.amount|floatformat:3 }}</td>
+                    <td style="padding:12px;">
+                        {% if overtime.paid %}
+                            <span style="color:green; font-weight:600;">Yes</span>
+                        {% else %}
+                            <span style="color:red; font-weight:600;">No</span>
+                        {% endif %}
+                    </td>
+                    <td style="padding:12px;">{{ overtime.paid_date|default:"-" }}</td>
+                    <td style="padding:12px;">
+                        <a href="{% url 'overtime_update' overtime.pk %}" style="color:#2563eb; text-decoration:none; margin-right:10px;">Edit</a>
+                        <a href="{% url 'overtime_delete' overtime.pk %}" style="color:#dc2626; text-decoration:none;">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" style="padding:20px; text-align:center; color:#6b7280;">
+                        No overtime records found.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div style="margin-top:30px; background:white; border-radius:12px; padding:24px; box-shadow:0 4px 14px rgba(0,0,0,0.08);">
+        <h4 style="margin-top:0;">Total by Employee</h4>
+        <table style="width:100%; border-collapse:collapse;">
+            <thead style="background:#f9fafb;">
+                <tr>
+                    <th style="text-align:left; padding:12px;">Employee</th>
+                    <th style="text-align:left; padding:12px;">Total Hours</th>
+                    <th style="text-align:left; padding:12px;">Total Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in total_by_employee %}
+                <tr>
+                    <td style="padding:12px;">{{ row.employee__first_name }} {{ row.employee__last_name }}</td>
+                    <td style="padding:12px;">{{ row.total_hours|floatformat:2 }}</td>
+                    <td style="padding:12px;">{{ row.total_amount|floatformat:3 }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" style="padding:12px; text-align:center; color:#6b7280;">No totals available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

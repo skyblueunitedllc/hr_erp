@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payroll Slip</title>
+    <style>
+        @media print {
+            .no-print { display: none !important; }
+            body { margin: 0; }
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            padding: 24px;
+            color: #111827;
+        }
+
+        .page {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .header {
+            text-align: center;
+            padding: 18px;
+            border-radius: 12px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .box {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 14px;
+        }
+
+        .meta-row {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 10px;
+            padding: 6px 0;
+            align-items: start;
+        }
+
+        .meta-label {
+            font-weight: 700;
+            color: #374151;
+            text-align: left;
+        }
+
+        .meta-value {
+            color: #111827;
+            text-align: left;
+        }
+
+        .salary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        td.label {
+            font-weight: 700;
+            width: 45%;
+            background: #f9fafb;
+        }
+
+        td.amount {
+            text-align: right;
+        }
+
+        .footer {
+            margin-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            color: #6b7280;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            color: white;
+        }
+
+        .salary-box {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 14px;
+        }
+
+        .notice {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="no-print" style="text-align:center; margin-bottom:16px;">
+        <a href="javascript:void(0)" onclick="window.print()" class="btn" style="background:#2563eb;">Open Print / Save as PDF</a>
+        <a href="{% url 'payroll_list' %}" class="btn" style="background:#6b7280;">Back</a>
+    </div>
+
+    <div class="notice no-print">
+        In the browser print dialog, choose <strong>Save as PDF</strong> to create a PDF file.
+    </div>
+
+    <div class="page">
+        <div class="header" style="
+            {% if company_name == 'Skyblue United LLC' %}
+                background:#2563eb;
+            {% elif company_name == 'Fana United' %}
+                background:#f97316;
+            {% else %}
+                background:#000000;
+            {% endif %}
+        ">
+            <h1 style="margin:0;">{{ company_name }}</h1>
+            <p style="margin:6px 0 0;">Payroll Slip</p>
+        </div>
+
+        <div class="meta">
+            <div class="box">
+                <div class="meta-row">
+                    <div class="meta-label">Employee:</div>
+                    <div class="meta-value">{{ payroll.employee.first_name }} {{ payroll.employee.last_name }}</div>
+                </div>
+                <div class="meta-row">
+                    <div class="meta-label">Code:</div>
+                    <div class="meta-value">{{ payroll.employee.employee_code }}</div>
+                </div>
+                <div class="meta-row">
+                    <div class="meta-label">Position:</div>
+                    <div class="meta-value">{{ payroll.employee.position }}</div>
+                </div>
+            </div>
+
+            <div class="box">
+                <div class="meta-row">
+                    <div class="meta-label">Date:</div>
+                    <div class="meta-value">{{ payroll.date }}</div>
+                </div>
+                <div class="meta-row">
+                    <div class="meta-label">Paid:</div>
+                    <div class="meta-value">{% if payroll.paid %}Yes{% else %}No{% endif %}</div>
+                </div>
+                <div class="meta-row">
+                    <div class="meta-label">Paid Date:</div>
+                    <div class="meta-value">{{ payroll.paid_date|default:"-" }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="salary-grid">
+            <div class="salary-box">
+                <table>
+                    <tr><td class="label">Basic Salary</td><td class="amount">{{ payroll.basic_salary|floatformat:3 }}</td></tr>
+                    <tr><td class="label">Allowance</td><td class="amount">{{ payroll.allowance|floatformat:3 }}</td></tr>
+                    <tr><td class="label">Incentives</td><td class="amount">{{ payroll.incentives|floatformat:3 }}</td></tr>
+                    <tr><td class="label">Bonus</td><td class="amount">{{ payroll.bonus|floatformat:3 }}</td></tr>
+                    <tr><td class="label">Deductions</td><td class="amount">{{ payroll.deductions|floatformat:3 }}</td></tr>
+                </table>
+            </div>
+
+            <div class="salary-box">
+                <table>
+                    <tr><td class="label">Gross Salary</td><td class="amount">{{ payroll.gross_salary|floatformat:3 }}</td></tr>
+                    <tr><td class="label">Net Salary</td><td class="amount"><strong>{{ payroll.net_salary|floatformat:3 }}</strong></td></tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div>Computer generated document</div>
+            <div>Signature: ____________________</div>
+        </div>
+    </div>
+</body>
+</html>
