@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto; padding: 24px;">
+    <div style="background: white; border-radius: 12px; padding: 28px; 
+box-shadow: 0 4px 14px rgba(0,0,0,0.08);">
+        <div style="display:flex; justify-content:space-between; 
+align-items:center; margin-bottom:24px;">
+            <h2 style="margin:0;">Document Print</h2>
+            <button onclick="window.print()" class="btn 
+btn-primary">Print</button>
+        </div>
+
+        <p><strong>Title:</strong> {{ document.title }}</p>
+        <p><strong>Employee:</strong> {{ document.employee|default:"-" 
+}}</p>
+        <p><strong>Company:</strong> {{ document.company }}</p>
+        <p><strong>Expiry Date:</strong> {{ 
+document.expiry_date|default:"-" }}</p>
+        <p><strong>Uploaded At:</strong> {{ document.uploaded_at }}</p>
+        <p><strong>Company Document:</strong> {% if 
+document.is_company_document %}Yes{% else %}No{% endif %}</p>
+        <p>
+            <strong>File:</strong>
+            {% if document.file %}
+                <a href="{{ document.file.url }}" target="_blank">Open 
+File</a>
+            {% else %}
+                -
+            {% endif %}
+        </p>
+    </div>
+</div>
+{% endblock %}
+
