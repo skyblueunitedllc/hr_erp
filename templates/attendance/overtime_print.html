@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 1000px; margin: 0 auto; padding: 24px;">
+    <div style="background:white; border-radius:12px; padding:28px; box-shadow:0 4px 14px rgba(0,0,0,0.08);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
+            <div>
+                <h2 style="margin:0;">Overtime Slip</h2>
+                {% if company_name %}
+                    <p style="margin:6px 0 0; color:#6b7280;">Company: <strong>{{ company_name }}</strong></p>
+                {% endif %}
+                {% if from_date_display or to_date_display %}
+                    <p style="margin:6px 0 0; color:#6b7280;">
+                        Period: <strong>{{ from_date_display }}</strong> to <strong>{{ to_date_display }}</strong>
+                    </p>
+                {% endif %}
+            </div>
+            <button onclick="window.print()" style="padding:10px 18px; border:none; background:#2563eb; color:white; border-radius:8px; cursor:pointer;">Print</button>
+        </div>
+
+        {% if employee_name %}
+            <div style="margin-bottom:16px;">
+                <strong>Employee:</strong> {{ employee_name }}
+            </div>
+        {% endif %}
+
+        <div style="overflow-x:auto;">
+            <table style="width:100%; border-collapse:collapse;">
+                <thead style="background:#f9fafb;">
+                    <tr>
+                        <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Date</th>
+                        <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Hours</th>
+                        <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Day Type</th>
+                        <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Rate/Hour</th>
+                        <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for overtime in overtimes %}
+                    <tr style="border-bottom:1px solid #f1f5f9;">
+                        <td style="padding:12px;">{{ overtime.work_date|date:"d/m/y" }}</td>
+                        <td style="padding:12px;">{{ overtime.hours }}</td>
+                        <td style="padding:12px;">{{ overtime.get_day_type_display }}</td>
+                        <td style="padding:12px;">{{ overtime.rate_per_hour }}</td>
+                        <td style="padding:12px;">{{ overtime.amount|floatformat:3 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" style="padding:20px; text-align:center; color:#6b7280;">
+                            No overtime records found for this period.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div style="margin-top:20px; padding-top:16px; border-top:1px solid #e5e7eb;">
+            <p style="margin:6px 0;"><strong>Total Hours:</strong> {{ total_hours|floatformat:2 }}</p>
+            <p style="margin:6px 0;"><strong>Total Amount:</strong> {{ total_amount|floatformat:3 }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

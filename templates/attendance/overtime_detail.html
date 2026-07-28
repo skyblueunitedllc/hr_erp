@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto; padding: 24px;">
+    <div style="background:white; border-radius:12px; padding:28px; box-shadow:0 4px 14px rgba(0,0,0,0.08);">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:20px;">
+            <div>
+                <h2 style="margin:0;">Overtime Details</h2>
+                {% if company_name %}
+                    <p style="margin:6px 0 0; color:#6b7280;">Company: <strong>{{ company_name }}</strong></p>
+                {% endif %}
+            </div>
+            <a href="{% url 'overtime_list' %}" style="background:#e5e7eb; color:#111827; padding:10px 16px; border-radius:8px; text-decoration:none; font-weight:600;">Back</a>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div><strong>Employee:</strong> {{ overtime.employee.first_name }} {{ overtime.employee.last_name }}</div>
+            <div><strong>Work Date:</strong> {{ overtime.work_date }}</div>
+            <div><strong>Hours:</strong> {{ overtime.hours }}</div>
+            <div><strong>Day Type:</strong> {{ overtime.get_day_type_display }}</div>
+            <div><strong>Rate per Hour:</strong> {{ overtime.rate_per_hour }}</div>
+            <div><strong>Amount:</strong> {{ overtime.amount|floatformat:3 }}</div>
+            <div><strong>Paid:</strong> {% if overtime.paid %}Yes{% else %}No{% endif %}</div>
+            <div><strong>Paid Date:</strong> {{ overtime.paid_date|default:"-" }}</div>
+            <div><strong>Company:</strong> {{ company_name }}</div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,8 +1,18 @@
+from datetime import datetime
 from django.shortcuts import render, redirect, get_object_or_404
-from django.db.models import Sum, Q
+from django.db.models import Q
 from employees.models import Employee
 from .models import Attendance, Overtime
 from .forms import AttendanceForm, OvertimeForm
+
+
+def _format_display_date(value):
+    if not value:
+        return ''
+    try:
+        return datetime.strptime(value, '%Y-%m-%d').strftime('%d/%m/%y')
+    except ValueError:
+        return value
 
 
 def attendance_list(request):
@@ -97,6 +107,8 @@ def overtime_list(request):
     company_id = request.session.get('company_id')
     company_name = request.session.get('company_name')
     query = request.GET.get('q', '')
+    from_date = request.GET.get('from_date', '')
+    to_date = request.GET.get('to_date', '')
 
     overtimes = Overtime.objects.none()
 
@@ -109,20 +121,27 @@ def overtime_list(request):
                 Q(employee__last_name__icontains=query)
             )
 
+        if from_date:
+            overtimes = overtimes.filter(work_date__gte=from_date)
+
+        if to_date:
+            overtimes = overtimes.filter(work_date__lte=to_date)
+
         overtimes = overtimes.order_by('-work_date', '-id')
 
-    total_by_employee = overtimes.values(
-        'employee__first_name', 'employee__last_name'
-    ).annotate(
-        total_hours=Sum('hours'),
-        total_amount=Sum('amount')
-    )
+    total_hours = sum(float(o.hours) for o in overtimes)
+    total_amount = sum(float(o.amount) for o in overtimes)
 
     return render(request, 'attendance/overtime_list.html', {
         'overtimes': overtimes,
         'company_name': company_name,
         'query': query,
-        'total_by_employee': total_by_employee,
+        'from_date': from_date,
+        'to_date': to_date,
+        'from_date_display': _format_display_date(from_date),
+        'to_date_display': _format_display_date(to_date),
+        'total_hours': total_hours,
+        'total_amount': total_amount,
     })
 
 
@@ -173,6 +192,55 @@ def overtime_update(request, pk):
         'form': form,
         'title': 'Edit Overtime',
         'company_name': request.session.get('company_name'),
+    })
+
+
+def overtime_detail(request, pk):
+    company_id = request.session.get('company_id')
+    overtime = get_object_or_404(Overtime, pk=pk, company_id=company_id)
+    return render(request, 'attendance/overtime_detail.html', {
+        'overtime': overtime,
+        'company_name': request.session.get('company_name'),
+    })
+
+
+def overtime_print(request):
+    company_id = request.session.get('company_id')
+    company_name = request.session.get('company_name')
+    query = request.GET.get('q', '')
+    from_date = request.GET.get('from_date', '')
+    to_date = request.GET.get('to_date', '')
+
+    overtimes = Overtime.objects.none()
+
+    if company_id:
+        overtimes = Overtime.objects.filter(company_id=company_id).select_related('employee', 'company')
+
+        if query:
+            overtimes = overtimes.filter(
+                Q(employee__first_name__icontains=query) |
+                Q(employee__last_name__icontains=query)
+            )
+
+        if from_date:
+            overtimes = overtimes.filter(work_date__gte=from_date)
+
+        if to_date:
+            overtimes = overtimes.filter(work_date__lte=to_date)
+
+        overtimes = overtimes.order_by('work_date', 'id')
+
+    total_hours = sum(float(o.hours) for o in overtimes)
+    total_amount = sum(float(o.amount) for o in overtimes)
+
+    return render(request, 'attendance/overtime_print.html', {
+        'overtimes': overtimes,
+        'employee_name': f"{overtimes.first().employee.first_name} {overtimes.first().employee.last_name}" if overtimes.exists() else '',
+        'company_name': company_name,
+        'from_date_display': _format_display_date(from_date),
+        'to_date_display': _format_display_date(to_date),
+        'total_hours': total_hours,
+        'total_amount': total_amount,
     })
 
 

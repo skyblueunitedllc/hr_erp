@@ -10,6 +10,9 @@ from .forms import PayrollForm
 @login_required
 def payroll_list(request):
     company_id = request.session.get("company_id")
+    if not company_id:
+        return redirect("select_company")
+
     company_name = request.session.get("company_name")
 
     employee_name = request.GET.get("employee_name", "").strip()
@@ -41,7 +44,6 @@ def payroll_list(request):
     elif paid_filter == "no":
         payrolls = payrolls.filter(paid=False)
 
-    # Default: hide paid payrolls from the main screen
     if not employee_name and not employee_code and not from_date and not to_date and not paid_filter:
         payrolls = payrolls.filter(paid=False)
 
@@ -61,6 +63,9 @@ def payroll_list(request):
 @login_required
 def payroll_create(request):
     company_id = request.session.get("company_id")
+    if not company_id:
+        return redirect("select_company")
+
     company = Company.objects.get(id=company_id)
 
     if request.method == "POST":
@@ -83,6 +88,9 @@ def payroll_create(request):
 @login_required
 def payroll_update(request, pk):
     company_id = request.session.get("company_id")
+    if not company_id:
+        return redirect("select_company")
+
     payroll = get_object_or_404(Payroll, pk=pk, company_id=company_id)
 
     if request.method == "POST":
@@ -104,6 +112,9 @@ def payroll_update(request, pk):
 @login_required
 def payroll_delete(request, pk):
     company_id = request.session.get("company_id")
+    if not company_id:
+        return redirect("select_company")
+
     payroll = get_object_or_404(Payroll, pk=pk, company_id=company_id)
 
     if request.method == "POST":
@@ -116,6 +127,9 @@ def payroll_delete(request, pk):
 @login_required
 def payroll_print(request, pk):
     company_id = request.session.get("company_id")
+    if not company_id:
+        return redirect("select_company")
+
     payroll = get_object_or_404(Payroll, pk=pk, company_id=company_id)
 
     if not payroll.paid:

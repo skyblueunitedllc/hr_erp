@@ -12,10 +12,29 @@
         <a href="{% url 'overtime_create' %}" style="background:#2563eb; color:white; padding:10px 16px; border-radius:8px; text-decoration:none; font-weight:600;">Add Overtime</a>
     </div>
 
-    <form method="get" style="margin-bottom:16px; display:flex; gap:10px; flex-wrap:wrap;">
-        <input type="text" name="q" value="{{ query }}" placeholder="Search by employee name..." style="padding:10px 12px; border:1px solid #d1d5db; border-radius:8px; min-width:260px;">
-        <button type="submit" style="background:#111827; color:white; border:none; padding:10px 16px; border-radius:8px;">Search</button>
+    <form method="get" style="margin-bottom:16px; display:flex; gap:10px; flex-wrap:wrap; align-items:end;">
+        <div>
+            <label style="display:block; font-size:14px; margin-bottom:6px; color:#374151;">From Date</label>
+            <input type="date" name="from_date" value="{{ from_date }}" style="padding:10px 12px; border:1px solid #d1d5db; border-radius:8px; min-width:180px;">
+        </div>
+        <div>
+            <label style="display:block; font-size:14px; margin-bottom:6px; color:#374151;">To Date</label>
+            <input type="date" name="to_date" value="{{ to_date }}" style="padding:10px 12px; border:1px solid #d1d5db; border-radius:8px; min-width:180px;">
+        </div>
+        <div>
+            <label style="display:block; font-size:14px; margin-bottom:6px; color:#374151;">Employee Name</label>
+            <input type="text" name="q" value="{{ query }}" placeholder="Search by employee name..." style="padding:10px 12px; border:1px solid #d1d5db; border-radius:8px; min-width:260px;">
+        </div>
+        <button type="submit" style="background:#111827; color:white; border:none; padding:10px 16px; border-radius:8px; height:42px;">Filter</button>
+        <a href="{% url 'overtime_list' %}" style="background:#e5e7eb; color:#111827; padding:10px 16px; border-radius:8px; text-decoration:none; height:42px; display:inline-flex; align-items:center;">Reset</a>
+        <a href="{% url 'overtime_print' %}?q={{ query }}&from_date={{ from_date }}&to_date={{ to_date }}" style="background:#7c3aed; color:white; padding:10px 16px; border-radius:8px; text-decoration:none; height:42px; display:inline-flex; align-items:center;">Print</a>
     </form>
+
+    {% if from_date or to_date %}
+        <div style="margin-bottom:16px; padding:12px 16px; background:#eff6ff; border:1px solid #bfdbfe; border-radius:10px; color:#1d4ed8;">
+            Showing overtime from <strong>{{ from_date|default:"Start" }}</strong> to <strong>{{ to_date|default:"End" }}</strong>
+        </div>
+    {% endif %}
 
     <div style="background:white; border-radius:12px; padding:24px; box-shadow:0 4px 14px rgba(0,0,0,0.08); overflow-x:auto;">
         <table style="width:100%; border-collapse:collapse;">
@@ -50,6 +69,7 @@
                     </td>
                     <td style="padding:12px;">{{ overtime.paid_date|default:"-" }}</td>
                     <td style="padding:12px;">
+                        <a href="{% url 'overtime_detail' overtime.pk %}" style="color:#16a34a; text-decoration:none; margin-right:10px;">View</a>
                         <a href="{% url 'overtime_update' overtime.pk %}" style="color:#2563eb; text-decoration:none; margin-right:10px;">Edit</a>
                         <a href="{% url 'overtime_delete' overtime.pk %}" style="color:#dc2626; text-decoration:none;">Delete</a>
                     </td>
@@ -65,30 +85,9 @@
         </table>
     </div>
 
-    <div style="margin-top:30px; background:white; border-radius:12px; padding:24px; box-shadow:0 4px 14px rgba(0,0,0,0.08);">
-        <h4 style="margin-top:0;">Total by Employee</h4>
-        <table style="width:100%; border-collapse:collapse;">
-            <thead style="background:#f9fafb;">
-                <tr>
-                    <th style="text-align:left; padding:12px;">Employee</th>
-                    <th style="text-align:left; padding:12px;">Total Hours</th>
-                    <th style="text-align:left; padding:12px;">Total Amount</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in total_by_employee %}
-                <tr>
-                    <td style="padding:12px;">{{ row.employee__first_name }} {{ row.employee__last_name }}</td>
-                    <td style="padding:12px;">{{ row.total_hours|floatformat:2 }}</td>
-                    <td style="padding:12px;">{{ row.total_amount|floatformat:3 }}</td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="3" style="padding:12px; text-align:center; color:#6b7280;">No totals available.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div style="margin-top:20px; background:white; border-radius:12px; padding:20px; box-shadow:0 4px 14px rgba(0,0,0,0.08);">
+        <strong>Total Hours:</strong> {{ total_hours|floatformat:2 }} &nbsp;&nbsp;
+        <strong>Total Amount:</strong> {{ total_amount|floatformat:3 }}
     </div>
 </div>
 {% endblock %}

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div style="max-width: 1300px; margin: 0 auto; padding: 24px;">
+<div style="max-width: 1400px; margin: 0 auto; padding: 24px;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
         <div>
             <h2 style="margin:0;">Employees</h2>
@@ -12,9 +12,13 @@
         <a href="{% url 'employee_create' %}" style="background:#2563eb; color:white; padding:10px 16px; border-radius:8px; text-decoration:none; font-weight:600;">Add Employee</a>
     </div>
 
-    <form method="get" style="margin-bottom:16px; display:flex; gap:10px; flex-wrap:wrap;">
-        <input type="text" name="q" value="{{ query }}" placeholder="Search by name..." style="padding:10px 12px; border:1px solid #d1d5db; border-radius:8px; min-width:260px;">
-        <button type="submit" style="background:#111827; color:white; border:none; padding:10px 16px; border-radius:8px;">Search</button>
+    <form method="get" style="margin-bottom:16px; display:flex; gap:10px; flex-wrap:wrap; align-items:end;">
+        <div>
+            <label style="display:block; font-size:14px; margin-bottom:6px; color:#374151;">Employee Name</label>
+            <input type="text" name="q" value="{{ query }}" placeholder="Search by name..." style="padding:10px 12px; border:1px solid #d1d5db; border-radius:8px; min-width:260px;">
+        </div>
+        <button type="submit" style="background:#111827; color:white; border:none; padding:10px 16px; border-radius:8px; height:42px;">Search</button>
+        <a href="{% url 'employee_list' %}" style="background:#e5e7eb; color:#111827; padding:10px 16px; border-radius:8px; text-decoration:none; height:42px; display:inline-flex; align-items:center;">Reset</a>
     </form>
 
     <div style="background:white; border-radius:12px; padding:24px; box-shadow:0 4px 14px rgba(0,0,0,0.08); overflow-x:auto;">
@@ -41,9 +45,9 @@
                     <td style="padding:12px;">{{ employee.last_name }}</td>
                     <td style="padding:12px;">{{ employee.position }}</td>
                     <td style="padding:12px;">{{ employee.department }}</td>
-                    <td style="padding:12px;">{{ employee.basic_salary }}</td>
-                    <td style="padding:12px;">{{ employee.allowance }}</td>
-                    <td style="padding:12px; font-weight:700;">{{ employee.net_salary }}</td>
+                    <td style="padding:12px;">{{ employee.basic_salary|floatformat:3 }}</td>
+                    <td style="padding:12px;">{{ employee.allowance|floatformat:3 }}</td>
+                    <td style="padding:12px;">{{ employee.net_salary|floatformat:3 }}</td>
                     <td style="padding:12px;">
                         {% if employee.is_active %}
                             <span style="color:green; font-weight:600;">Active</span>

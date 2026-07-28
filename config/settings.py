@@ -11,7 +11,8 @@ DEBUG = config("DEBUG", default=False, cast=bool)
 
 ALLOWED_HOSTS = config(
     "ALLOWED_HOSTS",
-    default="localhost,127.0.0.1,hr-erp-1.onrender.com"
+    default="localhost,127.0.0.1,hr-erp-1.onrender.com,muscat.media,www.muscat.media"
+
 ).split(",")
 
 INSTALLED_APPS = [

@@ -2,9 +2,11 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.db.models import Q
 from django.core.files.storage import default_storage
+from django.http import FileResponse
+import os
+
 from .models import Document
 from .forms import DocumentForm, DocumentRenewForm
-from companies.models import Company
 
 
 def document_list(request):
@@ -41,11 +43,40 @@ def document_detail(request, pk):
     return render(request, 'documents/document_detail.html', {'document': document})
 
 
+def document_print(request, pk):
+    company_id = request.session.get('company_id')
+    document = get_object_or_404(Document, pk=pk, company_id=company_id)
+    return render(request, 'documents/document_print.html', {'document': document})
+
+
+def document_download(request, pk):
+    company_id = request.session.get('company_id')
+    document = get_object_or_404(Document, pk=pk, company_id=company_id)
+
+    if not document.file:
+        messages.error(request, "No file available for this document.")
+        return redirect('document_detail', pk=pk)
+
+    filename = os.path.basename(document.file.name)
+    return FileResponse(document.file.open('rb'), as_attachment=True, filename=filename)
+
+
+def document_view(request, pk):
+    company_id = request.session.get('company_id')
+    document = get_object_or_404(Document, pk=pk, company_id=company_id)
+
+    if not document.file:
+        messages.error(request, "No file available for this document.")
+        return redirect('document_detail', pk=pk)
+
+    return FileResponse(document.file.open('rb'), as_attachment=False)
+
+
 def document_create(request):
     company_id = request.session.get('company_id')
     if not company_id:
         messages.error(request, "Please select a company first.")
-        return redirect('company_list')
+        return redirect('select_company')
 
     if request.method == 'POST':
         form = DocumentForm(request.POST, request.FILES, company_id=company_id)
