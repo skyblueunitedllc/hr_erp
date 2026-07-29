@@ -1,0 +1,20 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$renderseed$M5tD3VnLQm5n8Y3k9y1B1KxJcN6jD5wQd8u2mV1hF0A=",
+      "last_login": null,
+      "is_superuser": true,
+      "username": "skyblue",
+      "first_name": "",
+      "last_name": "",
+      "email": "unninair@gmail.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2026-07-29T00:00:00Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  }
+]
