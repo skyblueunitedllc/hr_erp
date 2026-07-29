@@ -1,5 +1,5 @@
 from pathlib import Path
-import os
+
 
 from decouple import config
 import dj_database_url
@@ -9,16 +9,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config("SECRET_KEY", default="django-insecure-change-me")
 DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = config(
-    "ALLOWED_HOSTS",
-    default="localhost,127.0.0.1,hr-erp-gz8x.onrender.com,.onrender.com,muscat.media,www.muscat.media"
-).split(",")
+ALLOWED_HOSTS = [
+    "hr-erp.onrender.com",
+    "hr-erp-gz8x.onrender.com",
+    ".onrender.com",
+    "localhost",
+    "127.0.0.1",
+]
+
 
 CSRF_TRUSTED_ORIGINS = [
+    "https://hr-erp.onrender.com",
     "https://hr-erp-gz8x.onrender.com",
     "https://*.onrender.com",
-    "https://muscat.media",
-    "https://www.muscat.media",
 ]
 
 
@@ -72,12 +75,17 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
-    'default': dj_database_url.config(
+    "default": dj_database_url.config(
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
         conn_max_age=600,
-        ssl_require=False
+        ssl_require=not DEBUG,
     )
 }
+
+
+
+
+    
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -113,6 +121,5 @@ LOGOUT_REDIRECT_URL = '/login/'
 
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
-SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
