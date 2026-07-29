@@ -11,8 +11,17 @@ DEBUG = config("DEBUG", default=False, cast=bool)
 
 ALLOWED_HOSTS = config(
     "ALLOWED_HOSTS",
-    default="localhost,127.0.0.1,hr-erp-1.onrender.com,muscat.media,www.muscat.media"
+    default="localhost,127.0.0.1,hr-erp-gz8x.onrender.com,.onrender.com,muscat.media,www.muscat.media"
 ).split(",")
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://hr-erp-gz8x.onrender.com",
+    "https://*.onrender.com",
+    "https://muscat.media",
+    "https://www.muscat.media",
+]
+
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
