@@ -108,7 +108,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_REDIRECT_URL = '/select-company/'
+LOGIN_REDIRECT_URL = '/companies/select-company/'
 LOGOUT_REDIRECT_URL = '/login/'
 
 SESSION_COOKIE_SECURE = not DEBUG
