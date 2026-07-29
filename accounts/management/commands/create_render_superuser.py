@@ -10,7 +10,7 @@ class Command(BaseCommand):
 
         username = "skyblue"
         email = "unninair@gmail.com"
-        password = "PosOman@4121964"
+        password = "Skyblue@12345"
 
         user, created = User.objects.get_or_create(
             username=username,
