@@ -23,7 +23,7 @@ def select_company(request):
             )
             request.session["company_id"] = company.id
             request.session["company_name"] = company.name
-            return redirect("dashboard")
+            return redirect("/report/dashboard/")
 
         company_id = request.POST.get("company_id")
         company = Company.objects.filter(id=company_id).first()
@@ -31,6 +31,6 @@ def select_company(request):
         if company:
             request.session["company_id"] = company.id
             request.session["company_name"] = company.name
-            return redirect("dashboard")
+            return redirect("/report/dashboard/")
 
     return render(request, "companies/select_company.html", {"companies": companies})

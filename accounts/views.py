@@ -3,7 +3,6 @@ from django.contrib.auth import login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 
-
 def login_view(request):
     if request.user.is_authenticated:
         return redirect("select_company")
@@ -15,6 +14,7 @@ def login_view(request):
             login(request, user)
             return redirect("select_company")
         else:
+            print("LOGIN FORM ERRORS:", form.errors)
             messages.error(request, "Invalid username or password.")
     else:
         form = AuthenticationForm()
