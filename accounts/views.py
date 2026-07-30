@@ -12,9 +12,10 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
+            print("LOGIN SUCCESS:", user)
             return redirect("select_company")
         else:
-            print("LOGIN FORM ERRORS:", form.errors)
+            print("LOGIN ERRORS:", form.errors)
             messages.error(request, "Invalid username or password.")
     else:
         form = AuthenticationForm()
